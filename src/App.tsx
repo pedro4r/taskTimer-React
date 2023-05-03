@@ -4,7 +4,7 @@ import './App.css'
 import { GlobalStyle } from './styles/global'
 import { defaultTheme } from './styles/themes/default'
 import { Router } from './Router'
-import { CyclesContext, CyclesContextProvider } from './contexts/CyclesContext'
+import { CyclesContextProvider } from './contexts/CyclesContext'
 
 export function App() {
   return (
