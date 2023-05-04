@@ -2,7 +2,7 @@
 import { ReactNode, createContext, useState, useReducer, useEffect } from 'react'
 import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
 import { addNewCycleAction, interruptCurrentCycleAction, markCurrentCycleAsFininshedAction } from '../reducers/cycles/actions';
-import { differenceInSeconds } from 'date-fns/esm';
+import { differenceInSeconds, parseISO } from 'date-fns/esm';
 
 interface CreateCycleData {
     task: string;
@@ -26,9 +26,8 @@ interface CyclesContextProviderProps {
 
 export const CyclesContext = createContext({} as CyclesContextType)
 
-export function CyclesContextProvider({
-    children,
-}: CyclesContextProviderProps) {
+export function CyclesContextProvider({ children, }:
+    CyclesContextProviderProps) {
 
     const [cyclesState, dispatch] = useReducer(
         cyclesReducer,
@@ -36,16 +35,24 @@ export function CyclesContextProvider({
             cycles: [],
             activeCycleId: null,
         },
-        () => {
+        (initialState) => {
             const storedStateAsJSON = localStorage.getItem(
-                '@taskTimer: cycles-state-1.0.0'
+                '@task-timer:cycles-state-1.0.0'
             )
 
             if (storedStateAsJSON) {
-                return JSON.parse(storedStateAsJSON)
+                const dataStored = JSON.parse(storedStateAsJSON);
+                console.log(dataStored)
+                dataStored.cycles.forEach((item: Cycle) => {
+                    item.startDate = parseISO(item.startDate as any)
+                })
+                return dataStored
             }
+
+            return initialState
         },
     )
+
     const { cycles, activeCycleId } = cyclesState;
     const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
 
@@ -62,7 +69,7 @@ export function CyclesContextProvider({
     useEffect(() => {
         const stateJSON = JSON.stringify(cyclesState)
 
-        localStorage.setItem('@taskTimer: cycles-state-1.0.0', stateJSON)
+        localStorage.setItem('@task-timer:cycles-state-1.0.0', stateJSON)
     }, [cyclesState])
 
     function setSecondsPassed(seconds: number) {

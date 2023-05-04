@@ -12,6 +12,7 @@ export function CountDown() {
         let interval: number
 
         if (activeCycle) {
+
             interval = setInterval(() => {
                 const secondsDifference = differenceInSeconds(
                     new Date(),
