@@ -42,7 +42,6 @@ export function CyclesContextProvider({ children, }:
 
             if (storedStateAsJSON) {
                 const dataStored = JSON.parse(storedStateAsJSON);
-                console.log(dataStored)
                 dataStored.cycles.forEach((item: Cycle) => {
                     item.startDate = parseISO(item.startDate as any)
                 })
